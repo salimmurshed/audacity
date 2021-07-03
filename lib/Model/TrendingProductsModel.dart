@@ -1,3 +1,5 @@
+import 'package:audacity/Utils/Urls.dart';
+import 'package:audacity/Utils/Utils.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:convert' as convert;
@@ -105,16 +107,30 @@ abstract class TrendingProductsRepository {
 class TrendingProductsRepositoryImpl extends TrendingProductsRepository {
   @override
   Future<List<TrendingProductsModel>> getTrendingProductss() async {
-    var response = await http.get(
-        'https://bd.ezassist.me/ws/mpFeed?instanceName=bd.ezassist.me&opt=trendingProducts');
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body);
+    bool isOnLine = await isOnline();
+    if (isOnLine) {
+      var response = await http.get(trendingProductURL);
+      if (response.statusCode == 200) {
+        saveResponse('TrendingProductResponse', response.body);
+        var data = json.decode(response.body);
 
-      List<TrendingProductsModel> trendingProduct =
-          TrendingProductsModel.fromJsonList(data[0]);
-      return trendingProduct;
+        List<TrendingProductsModel> trendingProduct =
+            TrendingProductsModel.fromJsonList(data[0]);
+        return trendingProduct;
+      } else {
+        throw Exception('Failed');
+      }
     } else {
-      throw Exception('Failed');
+      String TrendingProductOfflineResponse =
+          await getResponse('TrendingProductResponse');
+      if (TrendingProductOfflineResponse == null) {
+        throw Exception('No Internet and no cachhe !');
+      } else {
+        var data = json.decode(TrendingProductOfflineResponse);
+        List<TrendingProductsModel> TrendingProduct =
+            TrendingProductsModel.fromJsonList(data[0]);
+        return TrendingProduct;
+      }
     }
   }
 }

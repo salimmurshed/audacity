@@ -6,11 +6,15 @@ import 'package:audacity/Model/NewArrivalsModel.dart';
 import 'package:audacity/Model/NewShopsModel.dart';
 import 'package:audacity/Model/ProductsModel.dart';
 import 'package:audacity/Model/TredinSellerModel.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../Utils.dart';
+import '../Utils/Utils.dart';
+
+bool isOn;
 
 class TredinSellerPage extends StatefulWidget {
   @override
@@ -25,6 +29,7 @@ class _TredinSellerPageState extends State<TredinSellerPage> {
     tredinSellerBloc = BlocProvider.of<TredinSellerBloc>(context);
     tredinSellerBloc.add(FetchTredinSellerEvent());
     super.initState();
+    isOnlinex();
   }
 
   @override
@@ -46,6 +51,37 @@ class _TredinSellerPageState extends State<TredinSellerPage> {
         }),
       ),
     );
+  }
+
+  Future<bool> isOnlinex() async {
+    final Connectivity _connectivity = Connectivity();
+    ConnectivityResult result = await _connectivity.checkConnectivity();
+    switch (result) {
+      case ConnectivityResult.wifi:
+        setState(() {
+          isOn = true;
+          print(isOn);
+        });
+        break;
+      case ConnectivityResult.mobile:
+        setState(() {
+          isOn = true;
+          print(isOn);
+        });
+        break;
+      case ConnectivityResult.none:
+        setState(() {
+          isOn = false;
+          print(isOn);
+        });
+        break;
+      default:
+        setState(() {
+          isOn = false;
+          print(isOn);
+        });
+        break;
+    }
   }
 }
 
@@ -90,11 +126,12 @@ Widget buildHintsList(List<TredinSellersModel> tredinSeller) {
                             borderRadius: BorderRadius.circular(10),
                             child: tredinSeller[index].sellerItemPhoto == null
                                 ? Image.asset(
-                                    "lib/Assets/noimage.jpg",
+                                    "../lib/Assets/noimage.jpg",
                                     fit: BoxFit.cover,
                                   )
-                                : Image.network(
-                                    tredinSeller[index].sellerItemPhoto,
+                                : CachedNetworkImage(
+                                    imageUrl:
+                                        tredinSeller[index].sellerItemPhoto,
                                     fit: BoxFit.cover,
                                   ),
                           ),
@@ -132,16 +169,17 @@ Widget buildHintsList(List<TredinSellersModel> tredinSeller) {
                             width: 35,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(50),
-                              child: tredinSeller[index].sellerProfilePhoto ==
-                                      null
-                                  ? Image.asset(
-                                      "lib/Assets/noimage.jpg",
-                                      fit: BoxFit.cover,
-                                    )
-                                  : Image.network(
-                                      tredinSeller[index].sellerProfilePhoto,
-                                      fit: BoxFit.cover,
-                                    ),
+                              child:
+                                  tredinSeller[index].sellerProfilePhoto == null
+                                      ? Image.asset(
+                                          "lib/Assets/noimage.jpg",
+                                          fit: BoxFit.cover,
+                                        )
+                                      : CachedNetworkImage(
+                                          imageUrl: tredinSeller[index]
+                                              .sellerProfilePhoto,
+                                          fit: BoxFit.cover,
+                                        ),
                             ),
                           ),
                         )

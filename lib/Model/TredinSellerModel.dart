@@ -1,3 +1,5 @@
+import 'package:audacity/Utils/Urls.dart';
+import 'package:audacity/Utils/Utils.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:convert' as convert;
@@ -8,9 +10,9 @@ class TredinSellersModel {
   String sellerProfilePhoto;
   String sellerItemPhoto;
   String ezShopName;
-  double defaultPushScore;
+  var defaultPushScore;
   String aboutCompany;
-  int allowCOD;
+  var allowCOD;
   String division;
   String subDivision;
   String city;
@@ -18,11 +20,11 @@ class TredinSellersModel {
   String zipcode;
   String country;
   String currencyCode;
-  int orderQty;
-  int orderAmount;
-  int salesQty;
-  int salesAmount;
-  int highestDiscountPercent;
+  var orderQty;
+  var orderAmount;
+  var salesQty;
+  var salesAmount;
+  var highestDiscountPercent;
   String lastAddToCart;
   String lastAddToCartThatSold;
 
@@ -116,16 +118,30 @@ abstract class TredinSellersRepository {
 class TredinSellersRepositoryImpl extends TredinSellersRepository {
   @override
   Future<List<TredinSellersModel>> getTredinSellerss() async {
-    var response = await http.get(
-        'https://bd.ezassist.me/ws/mpFeed?instanceName=bd.ezassist.me&opt=trending_seller');
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body);
+    bool isOnLine = await isOnline();
+    if (isOnLine) {
+      var response = await http.get(tredingSellerURL);
+      if (response.statusCode == 200) {
+        saveResponse('TredinSellerResponse', response.body);
+        var data = json.decode(response.body);
 
-      List<TredinSellersModel> tredinSeller =
-          TredinSellersModel.fromJsonList(data[0]);
-      return tredinSeller;
+        List<TredinSellersModel> tredinSeller =
+            TredinSellersModel.fromJsonList(data[0]);
+        return tredinSeller;
+      } else {
+        throw Exception('Failed');
+      }
     } else {
-      throw Exception('Failed');
+      String TredinSellerOfflineResponse =
+          await getResponse('TredinSellerResponse');
+      if (TredinSellerOfflineResponse == null) {
+        throw Exception('No Internet and no cachhe !');
+      } else {
+        var data = json.decode(TredinSellerOfflineResponse);
+        List<TredinSellersModel> TredinSeller =
+            TredinSellersModel.fromJsonList(data[0]);
+        return TredinSeller;
+      }
     }
   }
 }

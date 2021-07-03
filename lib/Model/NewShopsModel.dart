@@ -1,3 +1,5 @@
+import 'package:audacity/Utils/Urls.dart';
+import 'package:audacity/Utils/Utils.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:convert' as convert;
@@ -8,11 +10,11 @@ class NewShopsModel {
   String sellerProfilePhoto;
   String sellerItemPhoto;
   String ezShopName;
-  double defaultPushScore;
+  var defaultPushScore;
   String aboutCompany;
   int allowCOD;
-  Null division;
-  Null subDivision;
+  String division;
+  var subDivision;
   String city;
   String state;
   String zipcode;
@@ -116,15 +118,27 @@ abstract class NewShopRepository {
 class NewShopRepositoryImpl extends NewShopRepository {
   @override
   Future<List<NewShopsModel>> getNewShops() async {
-    var response = await http.get(
-        'https://bd.ezassist.me/ws/mpFeed?instanceName=bd.ezassist.me&opt=newShops');
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body);
+    bool isOnLine = await isOnline();
+    if (isOnLine) {
+      var response = await http.get(newShopURL);
+      if (response.statusCode == 200) {
+        saveResponse('NewShopResponse', response.body);
+        var data = json.decode(response.body);
 
-      List<NewShopsModel> newShop = NewShopsModel.fromJsonList(data[0]);
-      return newShop;
+        List<NewShopsModel> newShop = NewShopsModel.fromJsonList(data[0]);
+        return newShop;
+      } else {
+        throw Exception('Failed');
+      }
     } else {
-      throw Exception('Failed');
+      String newShopOfflineResponse = await getResponse('NewShopResponse');
+      if (newShopOfflineResponse == null) {
+        throw Exception('No Internet and no cachhe !');
+      } else {
+        var data = json.decode(newShopOfflineResponse);
+        List<NewShopsModel> newShop = NewShopsModel.fromJsonList(data[0]);
+        return newShop;
+      }
     }
   }
 }

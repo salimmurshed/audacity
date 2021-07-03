@@ -1,3 +1,5 @@
+import 'package:audacity/Utils/Urls.dart';
+import 'package:audacity/Utils/Utils.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:convert' as convert;
@@ -124,15 +126,27 @@ abstract class ProductRepository {
 class ProductRepositoryImpl extends ProductRepository {
   @override
   Future<List<ProductsModel>> getProducts() async {
-    var response = await http.get(
-        'https://bd.ezassist.me/ws/mpFeed?instanceName=bd.ezassist.me&opt=stories');
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body);
+    bool isOnLine = await isOnline();
+    if (isOnLine) {
+      var response = await http.get(productRepoURL);
+      if (response.statusCode == 200) {
+        saveResponse('ProductResponse', response.body);
+        var data = json.decode(response.body);
 
-      List<ProductsModel> prod = ProductsModel.fromJsonList(data[0]);
-      return prod;
+        List<ProductsModel> prod = ProductsModel.fromJsonList(data[0]);
+        return prod;
+      } else {
+        throw Exception('Failed');
+      }
     } else {
-      throw Exception('Failed');
+      String ProductOfflineResponse = await getResponse('ProductResponse');
+      if (ProductOfflineResponse == null) {
+        throw Exception('No Internet and no cachhe !');
+      } else {
+        var data = json.decode(ProductOfflineResponse);
+        List<ProductsModel> Product = ProductsModel.fromJsonList(data[0]);
+        return Product;
+      }
     }
   }
 }

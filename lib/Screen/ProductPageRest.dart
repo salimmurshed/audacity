@@ -4,12 +4,16 @@ import 'package:audacity/Bloc/ProductBloc.dart';
 import 'package:audacity/Model/NewArrivalsModel.dart';
 import 'package:audacity/Model/NewShopsModel.dart';
 import 'package:audacity/Model/ProductsModel.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'NewArrivalsPage.dart';
 import 'NewShopPage.dart';
+
+bool isOn;
 
 class ProductPageRest extends StatefulWidget {
   @override
@@ -24,6 +28,38 @@ class _ProductPageRestState extends State<ProductPageRest> {
     productBloc = BlocProvider.of<ProductBloc>(context);
     productBloc.add(FetchProductEvent());
     super.initState();
+    isOnlinex();
+  }
+
+  Future<bool> isOnlinex() async {
+    final Connectivity _connectivity = Connectivity();
+    ConnectivityResult result = await _connectivity.checkConnectivity();
+    switch (result) {
+      case ConnectivityResult.wifi:
+        setState(() {
+          isOn = true;
+          print(isOn);
+        });
+        break;
+      case ConnectivityResult.mobile:
+        setState(() {
+          isOn = true;
+          print(isOn);
+        });
+        break;
+      case ConnectivityResult.none:
+        setState(() {
+          isOn = false;
+          print(isOn);
+        });
+        break;
+      default:
+        setState(() {
+          isOn = false;
+          print(isOn);
+        });
+        break;
+    }
   }
 
   @override
@@ -63,6 +99,7 @@ Widget buildHintsList(List<ProductsModel> prod, w) {
         Container(
           height: 1150,
           child: new ListView.builder(
+              // physics: NeverScrollableScrollPhysics(),
               itemCount: prod.length - 6,
               shrinkWrap: true,
               itemBuilder: (context, index) {
@@ -88,8 +125,8 @@ Widget buildHintsList(List<ProductsModel> prod, w) {
                                           "lib/Assets/noimage.jpg",
                                           fit: BoxFit.cover,
                                         )
-                                      : Image.network(
-                                          prod[index + 6].shopLogo,
+                                      : CachedNetworkImage(
+                                          imageUrl: prod[index + 6].shopLogo,
                                           fit: BoxFit.cover,
                                         ),
                                 ),
@@ -142,8 +179,8 @@ Widget buildHintsList(List<ProductsModel> prod, w) {
                                     "lib/Assets/noimage.jpg",
                                     fit: BoxFit.cover,
                                   )
-                                : Image.network(
-                                    prod[index + 6].storyImage,
+                                : CachedNetworkImage(
+                                    imageUrl: prod[index + 6].storyImage,
                                     fit: BoxFit.cover,
                                   ),
                           ),

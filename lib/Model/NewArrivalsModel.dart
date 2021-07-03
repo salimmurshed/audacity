@@ -1,8 +1,11 @@
+import 'package:audacity/Utils/Urls.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:convert' as convert;
 
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../Utils/Utils.dart';
 
 class NewArrivalsModel {
   String slNo;
@@ -106,25 +109,30 @@ abstract class NewArrivalRepository {
 class NewArrivalRepositoryImpl extends NewArrivalRepository {
   @override
   Future<List<NewArrivalsModel>> getNewArrivals() async {
-    var response = await http.get(
-        'https://bd.ezassist.me/ws/mpFeed?instanceName=bd.ezassist.me&opt=newArrivals');
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body);
+    bool isOnLine = await isOnline();
+    if (isOnLine) {
+      var response = await http.get(newArrivalURL);
+      if (response.statusCode == 200) {
+        saveResponse('NewArrivalResponse', response.body);
+        var data = json.decode(response.body);
 
-      List<NewArrivalsModel> newArrival =
-          NewArrivalsModel.fromJsonList(data[0]);
-      saveUserSP(data[0]);
-      return newArrival;
+        List<NewArrivalsModel> newArrival =
+            NewArrivalsModel.fromJsonList(data[0]);
+        return newArrival;
+      } else {
+        throw Exception('Failed');
+      }
     } else {
-      throw Exception('Failed');
+      String newArrivalOfflineResponse =
+          await getResponse('NewArrivalResponse');
+      if (newArrivalOfflineResponse == null) {
+        throw Exception('No Internet and no cachhe !');
+      } else {
+        var data = json.decode(newArrivalOfflineResponse);
+        List<NewArrivalsModel> newArrival =
+            NewArrivalsModel.fromJsonList(data[0]);
+        return newArrival;
+      }
     }
   }
-}
-
-saveUserSP(String u) async {
-  final prefs = await SharedPreferences.getInstance();
-  final key = 'user';
-  prefs.setString(key, u);
-  print(u);
-  return u;
 }

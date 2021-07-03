@@ -8,10 +8,12 @@ import 'package:audacity/Model/NewShopsModel.dart';
 import 'package:audacity/Model/ProductsModel.dart';
 import 'package:audacity/Model/TredinSellerModel.dart';
 import 'package:audacity/Model/TrendingProductsModel.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../Utils.dart';
+import '../Utils/Utils.dart';
 
 class TrendingProductsPage extends StatefulWidget {
   @override
@@ -91,8 +93,9 @@ Widget buildHintsList(List<TrendingProductsModel> trendingProduct) {
                                       "lib/Assets/noimage.jpg",
                                       fit: BoxFit.cover,
                                     )
-                                  : Image.network(
-                                      trendingProduct[index].productImage,
+                                  : CachedNetworkImage(
+                                      imageUrl:
+                                          trendingProduct[index].productImage,
                                       fit: BoxFit.cover,
                                     ),
                             ),
@@ -100,7 +103,7 @@ Widget buildHintsList(List<TrendingProductsModel> trendingProduct) {
                                 trendingProduct[index].productName == null
                                     ? ""
                                     : trendingProduct[index].productName,
-                                12),
+                                12.0),
                             PromoText(
                                 trendingProduct[index].unitPrice.toString() ==
                                         null
@@ -109,7 +112,7 @@ Widget buildHintsList(List<TrendingProductsModel> trendingProduct) {
                                         trendingProduct[index]
                                             .unitPrice
                                             .toString(),
-                                12),
+                                12.0),
                             GestureDetector(
                                 onTap: () {},
                                 child: Container(
@@ -124,7 +127,7 @@ Widget buildHintsList(List<TrendingProductsModel> trendingProduct) {
                                     padding: EdgeInsets.symmetric(
                                         horizontal: 2.0, vertical: 2.0),
                                     child: Center(
-                                      child: PromoText('Buy Now', 10),
+                                      child: PromoText('Buy Now', 10.0),
                                     ),
                                   ),
                                 ))

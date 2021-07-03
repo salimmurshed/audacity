@@ -2,6 +2,9 @@ import 'package:audacity/Bloc/NewShopsBloc.dart';
 import 'package:audacity/Bloc/ProductBloc.dart';
 import 'package:audacity/Model/NewShopsModel.dart';
 import 'package:audacity/Model/ProductsModel.dart';
+import 'package:audacity/Utils/Utils.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -51,84 +54,98 @@ Widget buildError(String message) {
 Widget buildHintsList(List<NewShopsModel> newShop) {
   return Container(
     height: 230,
-    child: new ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: newShop.length,
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          return Card(
-            elevation: 2,
-            child: Padding(
-              padding: EdgeInsets.all(4.0),
-              child: Container(
-                height: 230,
-                width: 120,
-                child: Stack(
-                  children: [
-                    Container(
-                      height: 230,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(left: 5),
+          child: newText('New Shop'),
+        ),
+        Container(
+          height: 200,
+          child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: newShop.length,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return Card(
+                  elevation: 2,
+                  child: Padding(
+                    padding: EdgeInsets.all(4.0),
+                    child: Container(
+                      height: 200,
                       width: 120,
-                      child: newShop[index].sellerProfilePhoto == null
-                          ? Image.asset(
-                              "lib/Assets/noimage.jpg",
-                              fit: BoxFit.cover,
-                            )
-                          : Image.network(
-                              newShop[index].sellerProfilePhoto,
-                              fit: BoxFit.cover,
-                            ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      child: Container(
-                        color: Color(0xA4000000),
-                        width: 120,
-                        height: 80,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Flexible(
-                              child: Text(
-                                newShop[index].ezShopName,
-                                style: TextStyle(
-                                    color: Color(0xffffffff),
-                                    fontWeight: FontWeight.w600),
-                                maxLines: 1,
-                                softWrap: false,
-                                overflow: TextOverflow.ellipsis,
+                      child: Stack(
+                        children: [
+                          Container(
+                            height: 200,
+                            width: 120,
+                            child: newShop[index].sellerProfilePhoto == null
+                                ? Image.asset(
+                                    "lib/Assets/noimage.jpg",
+                                    fit: BoxFit.cover,
+                                  )
+                                : CachedNetworkImage(
+                                    imageUrl: newShop[index].sellerProfilePhoto,
+                                    fit: BoxFit.cover,
+                                  ),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            child: Container(
+                              color: Color(0xA4000000),
+                              width: 120,
+                              height: 80,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      newShop[index].ezShopName,
+                                      style: TextStyle(
+                                          color: Color(0xffffffff),
+                                          fontWeight: FontWeight.w600),
+                                      maxLines: 1,
+                                      softWrap: false,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  Text(
+                                    newShop[index].city == null
+                                        ? ""
+                                        : newShop[index].city.toString(),
+                                    style: TextStyle(
+                                        color: Color(0xffffffff),
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  Text(
+                                    newShop[index].orderQty.toString() == null
+                                        ? ""
+                                        : newShop[index].orderQty == 0
+                                            ? "No order yet"
+                                            : newShop[index]
+                                                    .orderQty
+                                                    .toString() +
+                                                " Order(s)",
+                                    style: TextStyle(
+                                        color: Color(0xffffffff),
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ],
                               ),
                             ),
-                            Text(
-                              newShop[index].city == null
-                                  ? ""
-                                  : newShop[index].city.toString(),
-                              style: TextStyle(
-                                  color: Color(0xffffffff),
-                                  fontWeight: FontWeight.w600),
-                            ),
-                            Text(
-                              newShop[index].orderQty.toString() == null
-                                  ? ""
-                                  : newShop[index].orderQty == 0
-                                      ? "No order yet"
-                                      : newShop[index].orderQty.toString() +
-                                          " Order(s)",
-                              style: TextStyle(
-                                  color: Color(0xffffffff),
-                                  fontWeight: FontWeight.w600),
-                            ),
-                          ],
-                        ),
+                          )
+                        ],
                       ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          );
-        }),
+                    ),
+                  ),
+                );
+              }),
+        ),
+      ],
+    ),
   );
 }
 // newShop[index]
