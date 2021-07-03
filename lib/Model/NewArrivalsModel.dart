@@ -2,9 +2,6 @@ import 'package:audacity/Utils/Urls.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:convert' as convert;
-
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../Utils/Utils.dart';
 
 class NewArrivalsModel {

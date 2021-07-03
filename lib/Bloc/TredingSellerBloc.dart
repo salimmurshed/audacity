@@ -1,4 +1,3 @@
-import 'package:audacity/Model/ProductsModel.dart';
 import 'package:audacity/Model/TredinSellerModel.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

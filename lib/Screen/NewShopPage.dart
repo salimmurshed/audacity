@@ -1,10 +1,7 @@
 import 'package:audacity/Bloc/NewShopsBloc.dart';
-import 'package:audacity/Bloc/ProductBloc.dart';
 import 'package:audacity/Model/NewShopsModel.dart';
-import 'package:audacity/Model/ProductsModel.dart';
 import 'package:audacity/Utils/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

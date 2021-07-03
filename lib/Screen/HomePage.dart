@@ -1,18 +1,12 @@
-import 'package:audacity/Bloc/NewArrivalsBloc.dart';
-import 'package:audacity/Bloc/NewShopsBloc.dart';
 import 'package:audacity/Bloc/ProductBloc.dart';
 import 'package:audacity/Bloc/TredingSellerBloc.dart';
 import 'package:audacity/Bloc/TrendingProductsBloc.dart';
-import 'package:audacity/Model/NewArrivalsModel.dart';
-import 'package:audacity/Model/NewShopsModel.dart';
 import 'package:audacity/Model/ProductsModel.dart';
 import 'package:audacity/Model/TredinSellerModel.dart';
 import 'package:audacity/Model/TrendingProductsModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'NewArrivalsPage.dart';
-import 'NewShopPage.dart';
 import 'ProductPage.dart';
 import 'ProductPageRest.dart';
 import 'TredinSellerPage.dart';
@@ -71,7 +65,7 @@ class _HomePageState extends State<HomePage> {
                     child: ProductPage()),
               ),
               Container(
-                height: 400 * numberList.toDouble(),
+                height: 400 * (numberList - 6).toDouble(),
                 child: BlocProvider(
                     create: (context) =>
                         ProductBloc(repository: ProductRepositoryImpl()),
