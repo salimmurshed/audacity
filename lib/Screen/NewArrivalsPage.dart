@@ -23,7 +23,6 @@ class _NewArrivalPageState extends State<NewArrivalPage> {
     newArrivalBloc = BlocProvider.of<NewArrivalBloc>(context);
     newArrivalBloc.add(FetchNewArrivalEvent());
     super.initState();
-    isOnlinex();
   }
 
   @override
@@ -46,40 +45,8 @@ class _NewArrivalPageState extends State<NewArrivalPage> {
       ),
     );
   }
-
-  Future<bool> isOnlinex() async {
-    final Connectivity _connectivity = Connectivity();
-    ConnectivityResult result = await _connectivity.checkConnectivity();
-    switch (result) {
-      case ConnectivityResult.wifi:
-        setState(() {
-          isOn = true;
-          print(isOn);
-        });
-        break;
-      case ConnectivityResult.mobile:
-        setState(() {
-          isOn = true;
-          print(isOn);
-        });
-        break;
-      case ConnectivityResult.none:
-        setState(() {
-          isOn = false;
-          print(isOn);
-        });
-        break;
-      default:
-        setState(() {
-          isOn = false;
-          print(isOn);
-        });
-        break;
-    }
-  }
 }
 
-bool isOn;
 Widget buildError(String message) {
   return Center(
     child: Text(message),

@@ -14,8 +14,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../Utils/Utils.dart';
 
-bool isOn;
-
 class TredinSellerPage extends StatefulWidget {
   @override
   _TredinSellerPageState createState() => _TredinSellerPageState();
@@ -29,7 +27,6 @@ class _TredinSellerPageState extends State<TredinSellerPage> {
     tredinSellerBloc = BlocProvider.of<TredinSellerBloc>(context);
     tredinSellerBloc.add(FetchTredinSellerEvent());
     super.initState();
-    isOnlinex();
   }
 
   @override
@@ -51,37 +48,6 @@ class _TredinSellerPageState extends State<TredinSellerPage> {
         }),
       ),
     );
-  }
-
-  Future<bool> isOnlinex() async {
-    final Connectivity _connectivity = Connectivity();
-    ConnectivityResult result = await _connectivity.checkConnectivity();
-    switch (result) {
-      case ConnectivityResult.wifi:
-        setState(() {
-          isOn = true;
-          print(isOn);
-        });
-        break;
-      case ConnectivityResult.mobile:
-        setState(() {
-          isOn = true;
-          print(isOn);
-        });
-        break;
-      case ConnectivityResult.none:
-        setState(() {
-          isOn = false;
-          print(isOn);
-        });
-        break;
-      default:
-        setState(() {
-          isOn = false;
-          print(isOn);
-        });
-        break;
-    }
   }
 }
 

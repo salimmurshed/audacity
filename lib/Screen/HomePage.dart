@@ -18,6 +18,8 @@ import 'ProductPageRest.dart';
 import 'TredinSellerPage.dart';
 import 'TrendingProductsPage.dart';
 
+int numberList = 0;
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -27,6 +29,12 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    ProductRepositoryImpl().getProducts().then((value) {
+      setState(() {
+        numberList = value.length;
+        print(numberList);
+      });
+    });
   }
 
   @override
@@ -63,7 +71,7 @@ class _HomePageState extends State<HomePage> {
                     child: ProductPage()),
               ),
               Container(
-                height: h,
+                height: 400 * numberList.toDouble(),
                 child: BlocProvider(
                     create: (context) =>
                         ProductBloc(repository: ProductRepositoryImpl()),

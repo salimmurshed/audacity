@@ -13,8 +13,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'NewArrivalsPage.dart';
 import 'NewShopPage.dart';
 
-bool isOn;
-
 class ProductPageRest extends StatefulWidget {
   @override
   _ProductPageRestState createState() => _ProductPageRestState();
@@ -28,38 +26,6 @@ class _ProductPageRestState extends State<ProductPageRest> {
     productBloc = BlocProvider.of<ProductBloc>(context);
     productBloc.add(FetchProductEvent());
     super.initState();
-    isOnlinex();
-  }
-
-  Future<bool> isOnlinex() async {
-    final Connectivity _connectivity = Connectivity();
-    ConnectivityResult result = await _connectivity.checkConnectivity();
-    switch (result) {
-      case ConnectivityResult.wifi:
-        setState(() {
-          isOn = true;
-          print(isOn);
-        });
-        break;
-      case ConnectivityResult.mobile:
-        setState(() {
-          isOn = true;
-          print(isOn);
-        });
-        break;
-      case ConnectivityResult.none:
-        setState(() {
-          isOn = false;
-          print(isOn);
-        });
-        break;
-      default:
-        setState(() {
-          isOn = false;
-          print(isOn);
-        });
-        break;
-    }
   }
 
   @override
@@ -92,161 +58,143 @@ Widget buildError(String message) {
 }
 
 Widget buildHintsList(List<ProductsModel> prod, w) {
-  var nums = [for (int i = 6; i < prod.length - 6; i++) i];
-  return SingleChildScrollView(
-    child: Column(
-      children: [
-        Container(
-          height: 1150,
-          child: new ListView.builder(
-              // physics: NeverScrollableScrollPhysics(),
-              itemCount: prod.length - 6,
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return Card(
-                  elevation: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                height: 40,
-                                width: 40,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(50)),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(50),
-                                  child: prod[index + 6].shopLogo == null
-                                      ? Image.asset(
-                                          "lib/Assets/noimage.jpg",
-                                          fit: BoxFit.cover,
-                                        )
-                                      : CachedNetworkImage(
-                                          imageUrl: prod[index + 6].shopLogo,
-                                          fit: BoxFit.cover,
-                                        ),
+  return new ListView.builder(
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: prod.length - 6,
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        return Card(
+          elevation: 3,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50)),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(50),
+                          child: prod[index + 6].shopLogo == null
+                              ? Image.asset(
+                                  "lib/Assets/noimage.jpg",
+                                  fit: BoxFit.cover,
+                                )
+                              : CachedNetworkImage(
+                                  imageUrl: prod[index + 6].shopLogo,
+                                  fit: BoxFit.cover,
                                 ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      prod[index + 6].ezShopName == null
-                                          ? ''
-                                          : prod[index + 6].ezShopName +
-                                              index.toString(),
-                                      style: TextStyle(
-                                          color: Color(0xff030101),
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 14.0),
-                                    ),
-                                    Text(
-                                      prod[index + 6].storyTime == null
-                                          ? ''
-                                          : StringExtension
-                                              .displayTimeAgoFromTimestamp(
-                                                  prod[index + 6].storyTime),
-                                      style: TextStyle(
-                                          color: Color(0xff746e6e),
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 12.0),
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Text(prod[index + 6].story == null
-                              ? ""
-                              : prod[index + 6].story),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Container(
-                            height: 250,
-                            width: w,
-                            child: prod[index + 6].storyImage == null
-                                ? Image.asset(
-                                    "lib/Assets/noimage.jpg",
-                                    fit: BoxFit.cover,
-                                  )
-                                : CachedNetworkImage(
-                                    imageUrl: prod[index + 6].storyImage,
-                                    fit: BoxFit.cover,
-                                  ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.card_giftcard,
-                                      size: 16,
-                                    ),
-                                    Text(
-                                      ' MYR ' +
-                                          prod[index + 6].unitPrice.toString(),
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w700),
-                                    )
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.filter_list,
-                                      size: 16,
-                                    ),
-                                    Text(
-                                      prod[index + 6]
-                                              .availableStock
-                                              .toString() +
-                                          ' Stocks '
-                                              'Available',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w700),
-                                    )
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.shopping_cart_outlined,
-                                      size: 16,
-                                    ),
-                                    Text(
-                                      prod[index + 6].orderQty.toString() +
-                                          ' Order(s)',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w700),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              prod[index + 6].ezShopName == null
+                                  ? ''
+                                  : prod[index + 6].ezShopName +
+                                      index.toString(),
+                              style: TextStyle(
+                                  color: Color(0xff030101),
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14.0),
+                            ),
+                            Text(
+                              prod[index + 6].storyTime == null
+                                  ? ''
+                                  : StringExtension.displayTimeAgoFromTimestamp(
+                                      prod[index + 6].storyTime),
+                              style: TextStyle(
+                                  color: Color(0xff746e6e),
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12.0),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text(prod[index + 6].story == null
+                      ? ""
+                      : prod[index + 6].story),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    height: 250,
+                    width: w,
+                    child: prod[index + 6].storyImage == null
+                        ? Image.asset(
+                            "lib/Assets/noimage.jpg",
+                            fit: BoxFit.cover,
+                          )
+                        : CachedNetworkImage(
+                            imageUrl: prod[index + 6].storyImage,
+                            fit: BoxFit.cover,
+                          ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.card_giftcard,
+                              size: 16,
+                            ),
+                            Text(
+                              ' MYR ' + prod[index + 6].unitPrice.toString(),
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            )
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.filter_list,
+                              size: 16,
+                            ),
+                            Text(
+                              prod[index + 6].availableStock.toString() +
+                                  ' Stocks '
+                                      'Available',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            )
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.shopping_cart_outlined,
+                              size: 16,
+                            ),
+                            Text(
+                              prod[index + 6].orderQty.toString() + ' Order(s)',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            )
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                );
-              }),
-        ),
-      ],
-    ),
-  );
+                ],
+              ),
+            ),
+          ),
+        );
+      });
 }
 
 extension StringExtension on String {

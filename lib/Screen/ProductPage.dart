@@ -13,8 +13,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'NewArrivalsPage.dart';
 import 'NewShopPage.dart';
 
-bool isOn;
-
 class ProductPage extends StatefulWidget {
   @override
   _ProductPageState createState() => _ProductPageState();
@@ -28,38 +26,6 @@ class _ProductPageState extends State<ProductPage> {
     productBloc = BlocProvider.of<ProductBloc>(context);
     productBloc.add(FetchProductEvent());
     super.initState();
-    isOnlinex();
-  }
-
-  Future<bool> isOnlinex() async {
-    final Connectivity _connectivity = Connectivity();
-    ConnectivityResult result = await _connectivity.checkConnectivity();
-    switch (result) {
-      case ConnectivityResult.wifi:
-        setState(() {
-          isOn = true;
-          print(isOn);
-        });
-        break;
-      case ConnectivityResult.mobile:
-        setState(() {
-          isOn = true;
-          print(isOn);
-        });
-        break;
-      case ConnectivityResult.none:
-        setState(() {
-          isOn = false;
-          print(isOn);
-        });
-        break;
-      default:
-        setState(() {
-          isOn = false;
-          print(isOn);
-        });
-        break;
-    }
   }
 
   @override
